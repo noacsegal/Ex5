@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,11 +13,28 @@ namespace GameLogic
         player = 0,
         computer = 1
     }
-    internal class GameManager
+    public class GameManager
     {
         private Board m_GameBoard;
+        private Player m_Player1;
+        private Player m_Player2;
+        private Player m_CurrentPlayer;
+        private int m_BoardSize;
         private eGameType m_GameType = 0;
         private static bool s_QuitGame = false;
+
+        public event Action ScoreChanged;
+        public event Action<CellChangedEventArgs> CellChanged;
+        public event Action<string> GameEnd;
+
+        public Player Player1
+        {
+            get { return m_Player1; }
+        }
+        public Player Player2
+        {
+            get { return m_Player2; }
+        }
 
         public static bool QuitGame
         {
@@ -29,164 +48,86 @@ namespace GameLogic
             }
         }
 
-        //public void StartGame(int i_BoardSize)
-        //{
-        //    int boardSize = i_BoardSize;
-
-        //    if (!s_QuitGame)
-        //    {
-        //        m_GameBoard = new Board(boardSize);
-        //        Player player1 = new Player(ePlayerSymbol.O);
-        //        Player player2 = new Player(ePlayerSymbol.X);
-        //        AIPlayer playerAI = new AIPlayer();
-
-        //        if (!s_QuitGame)
-        //        {
-
-        //            if (m_GameType == eGameType.player)
-        //            {
-        //                RunTwoPlayers(player1, player2);
-        //            }
-        //            else
-        //            {
-        //                RunPlayerVsComputer(player1, playerAI);
-        //            }
-        //            if (!s_QuitGame)
-        //            {
-        //                playGame = InputManager.AnotherGame();
-        //                m_GameBoard = new Board(boardSize);
-        //            }
-        //            else
-        //            {
-        //                playGame = false;
-        //            }
-        //        }
-        //    }
-        //}
-
-        //// $G$ DSN-004 (-10) Code duplication. This method and RunPlayerVsComputer() method shares the same game loop structure.
-        //// The cause of this problem is becasue of the AIPlayer class. Since in this assignment the AIPlayer class do not have any real functionality,
-        //// it would be better to remove that class and move the GenerateRandomMove() method from AIPlayer class to this class.
-        //// and add a condition in the game loop to check if player 2 is computer and then call GenerateRandomMove() method.
-        //public void RunPlayerVsComputer(Player i_Player1, AIPlayer i_Player2)
-        //{
-        //    ePlayerSymbol? gameWinner = null;
-        //    bool isBoardFull = false;
-        //    DisplayManager.PrintBoard(m_GameBoard);
-        //    while (!s_QuitGame && gameWinner == null && !isBoardFull)
-        //    {
-        //        if (!UpdatePlayerMoveOnBoard(i_Player1, 1))
-        //        {
-        //            DisplayManager.PrintBoard(m_GameBoard);
-        //            gameWinner = m_GameBoard.GetGameWinner();
-        //            isBoardFull = m_GameBoard.IsBoardFull();
-
-        //            if (gameWinner == null && !isBoardFull)
-        //            {
-        //                UpdateAIPlayerMoveOnBoard(i_Player2, 2);
-        //                DisplayManager.PrintBoard(m_GameBoard);
-        //                gameWinner = m_GameBoard.GetGameWinner();
-        //                isBoardFull = m_GameBoard.IsBoardFull();
-        //            }
-        //        }
-        //    }
-        //    if (gameWinner != null)
-        //    {
-        //        if (gameWinner == ePlayerSymbol.O)
-        //        {
-        //            i_Player1.IncreaseScore();
-        //        }
-        //        else if (gameWinner != null)
-        //        {
-        //            i_Player2.IncreaseScore();
-        //        }
-        //    }
-
-        //    DisplayManager.PrintEndScreen(gameWinner, s_QuitGame);
-        //    if (!s_QuitGame)
-        //    {
-        //        DisplayManager.PrintScore(i_Player1.Score, i_Player2.Score, "Computer");
-        //    }
-        //}
-        //public void RunTwoPlayers(Player i_Player1, Player i_Player2)
-        //{
-        //    ePlayerSymbol? gameWinner = null;
-        //    bool isBoardFull = false;
-        //    DisplayManager.PrintBoard(m_GameBoard);
-        //    while (!s_QuitGame && gameWinner == null && !isBoardFull)
-        //    {
-        //        if (!UpdatePlayerMoveOnBoard(i_Player1, 1))
-        //        {
-        //            DisplayManager.PrintBoard(m_GameBoard);
-        //            gameWinner = m_GameBoard.GetGameWinner();
-        //            isBoardFull = m_GameBoard.IsBoardFull();
-
-        //            if (gameWinner == null && !isBoardFull)
-        //            {
-        //                if (!UpdatePlayerMoveOnBoard(i_Player2, 2))
-        //                {
-        //                    DisplayManager.PrintBoard(m_GameBoard);
-        //                    gameWinner = m_GameBoard.GetGameWinner();
-        //                    isBoardFull = m_GameBoard.IsBoardFull();
-        //                }
-        //            }
-        //        }
-        //    }
-        //    if (gameWinner != null)
-        //    {
-        //        if (gameWinner == ePlayerSymbol.O)
-        //        {
-        //            i_Player1.IncreaseScore();
-        //        }
-        //        else if (gameWinner != null)
-        //        {
-        //            i_Player2.IncreaseScore();
-        //        }
-        //    }
-
-
-        //    DisplayManager.PrintEndScreen(gameWinner, s_QuitGame);
-        //    if (!s_QuitGame)
-        //    {
-        //        DisplayManager.PrintScore(i_Player1.Score, i_Player2.Score, "Player 2");
-        //    }
-        //}
-
-        //public bool UpdatePlayerMoveOnBoard(Player i_Player, int i_NumOfPlayer)
-        //{
-        //    bool isQuit = false;
-        //    InputManager.GetPosition(i_NumOfPlayer, m_GameBoard.BoardSize, out int numInRow, out int numInCol);
-        //    if (numInCol != -1 && numInRow != -1)
-        //    {
-        //        Move placeInMatPlayer1 = new Move(numInRow - 1, numInCol - 1);
-
-        //        while (!m_GameBoard.CheckValidMove(placeInMatPlayer1) && !isQuit)
-        //        {
-        //            DisplayManager.PrintInvalidCellMessage();
-        //            InputManager.GetPosition(i_NumOfPlayer, m_GameBoard.BoardSize, out numInRow, out numInCol);
-        //            if (numInCol != -1 && numInRow != -1)
-        //            {
-        //                placeInMatPlayer1 = new Move(numInRow - 1, numInCol - 1);
-        //            }
-        //            else
-        //            {
-        //                isQuit = true;
-        //            }
-        //        }
-        //        m_GameBoard.UpdateMove(placeInMatPlayer1, i_Player.Symbol);
-        //    }
-        //    else
-        //    {
-        //        isQuit = true;
-        //    }
-
-        //    return isQuit;
-        //}
-
-        public void UpdateAIPlayerMoveOnBoard(AIPlayer i_Player, int i_NumberOfPlayer)
+        public void StartGame(int i_BoardSize, bool i_IsAIPlayer)
         {
-            Move placeOnBoard = i_Player.GenerateRandomMove(m_GameBoard);
-            m_GameBoard.UpdateMove(placeOnBoard, i_Player.Symbol);
+            m_GameBoard = new Board(i_BoardSize);
+            m_Player1 = new Player(ePlayerSymbol.O, false);
+            m_Player2 = new Player(ePlayerSymbol.X, i_IsAIPlayer);
+
+            m_CurrentPlayer = m_Player1;
+            m_GameType = i_IsAIPlayer ? eGameType.computer : eGameType.player;
+        }
+
+
+        public void RunTwoPlayers(int i_Row, int i_Col)
+        {
+            ePlayerSymbol? gameWinner = null;
+            bool isBoardFull = false;
+
+            gameWinner = m_GameBoard.GetGameWinner();
+            isBoardFull = m_GameBoard.IsBoardFull();
+            if (gameWinner != null || isBoardFull)
+            {
+                return;
+            }
+            UpdatePlayerMoveOnBoard(m_CurrentPlayer,1, i_Row, i_Col);
+            gameWinner = m_GameBoard.GetGameWinner();
+            isBoardFull = m_GameBoard.IsBoardFull();
+            if (gameWinner == null && !isBoardFull)
+            {
+                if (m_GameType == eGameType.computer)
+                {
+                    m_CurrentPlayer = m_Player2;
+                    UpdatePlayerMoveOnBoard(m_CurrentPlayer,2, i_Row, i_Col);
+                    gameWinner = m_GameBoard.GetGameWinner();
+                    isBoardFull = m_GameBoard.IsBoardFull();
+                    m_CurrentPlayer = m_Player1;
+                }
+                else
+                {
+                    m_CurrentPlayer = (m_CurrentPlayer == m_Player1) ? m_Player2 : m_Player1;
+                }
+            }
+            if (gameWinner != null)
+            {
+                if (gameWinner == ePlayerSymbol.O)
+                {
+                    m_Player1.IncreaseScore();
+                }
+                else if (gameWinner != null)
+                {
+                    m_Player2.IncreaseScore();
+                }
+                ScoreChanged?.Invoke();
+                GameEnd?.Invoke($"A Win!\nThe winner is {gameWinner}!");
+            }
+            else if (isBoardFull)
+            {
+                GameEnd?.Invoke("A Tie!\nTie!");
+            }
+        }
+        public void ResetGameRound()
+        {
+            m_GameBoard = new Board(m_BoardSize);
+            m_CurrentPlayer = m_Player1;
+        }
+
+        public void UpdatePlayerMoveOnBoard(Player i_Player, int i_NumOfPlayer, int i_Row, int i_Col)
+        {
+            if (i_Player.IsAIPlayer)
+            {
+                Move placeOnBoard = i_Player.GenerateRandomMove(m_GameBoard);
+                m_GameBoard.UpdateMove(placeOnBoard, i_Player.Symbol);
+                CellChangedEventArgs cellChangedArgs = new CellChangedEventArgs(placeOnBoard.m_Row, placeOnBoard.m_Col, i_Player.Symbol);
+                CellChanged?.Invoke(cellChangedArgs);
+            }
+            else
+            {
+                Move placeInMatPlayer = new Move(i_Row, i_Col);
+                m_GameBoard.UpdateMove(placeInMatPlayer, i_Player.Symbol);
+                CellChangedEventArgs cellChangedArgs = new CellChangedEventArgs(i_Row, i_Col, i_Player.Symbol);
+                CellChanged?.Invoke(cellChangedArgs);
+            }
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameLogic
 {
-    internal class Move
+    public class Move
     {
         public int m_Row;
         public int m_Col;

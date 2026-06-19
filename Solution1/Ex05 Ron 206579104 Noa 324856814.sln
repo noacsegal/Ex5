@@ -1,10 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.37216.2 d17.14
+VisualStudioVersion = 17.14.37216.2
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsUI", "WindowsUI\WindowsUI.csproj", "{5091DB12-600C-4EA7-A518-0BDF4EDFABB8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLogic", "GameLogic\GameLogic.csproj", "{26CB73EE-A4A9-4A2D-BB6E-F03BB72A4A6F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindownInterface", "WindownInterface\WindownInterface.csproj", "{30434F16-E9C0-48D2-A3A3-16BD8CBA57EE}"
@@ -15,10 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5091DB12-600C-4EA7-A518-0BDF4EDFABB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5091DB12-600C-4EA7-A518-0BDF4EDFABB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5091DB12-600C-4EA7-A518-0BDF4EDFABB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5091DB12-600C-4EA7-A518-0BDF4EDFABB8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{26CB73EE-A4A9-4A2D-BB6E-F03BB72A4A6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{26CB73EE-A4A9-4A2D-BB6E-F03BB72A4A6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26CB73EE-A4A9-4A2D-BB6E-F03BB72A4A6F}.Release|Any CPU.ActiveCfg = Release|Any CPU

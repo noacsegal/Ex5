@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{26CB73EE-A4A9-4A2D-BB6E-F03BB72A4A6F}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>GameLogic</RootNamespace>
     <AssemblyName>GameLogic</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
@@ -45,6 +48,7 @@
   <ItemGroup>
     <Compile Include="AIPlayer.cs" />
     <Compile Include="Board.cs" />
+    <Compile Include="CellChangedEventArgs.cs" />
     <Compile Include="GameManager.cs" />
     <Compile Include="Move.cs" />
     <Compile Include="Player.cs" />

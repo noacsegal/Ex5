@@ -12,10 +12,13 @@ namespace GameLogic
         X,
         O
     }
-    internal class Player
+    public class Player
     {
         private ePlayerSymbol m_Symbol;
         private int m_Score;
+        private bool m_IsAIPlayer;
+        private readonly Random m_rand = new Random();
+
         public int Score
         {
             get
@@ -26,6 +29,11 @@ namespace GameLogic
             {
                 m_Score = value;
             }
+        }
+        public bool IsAIPlayer
+        {
+            get { return m_IsAIPlayer; }
+            set { m_IsAIPlayer = value; }
         }
 
         public ePlayerSymbol Symbol
@@ -39,14 +47,22 @@ namespace GameLogic
                 m_Symbol = value;
             }
         }
-        public Player(ePlayerSymbol i_Symbol)
+        public Player(ePlayerSymbol i_Symbol, bool i_isAIPlayer)
         {
             m_Symbol = i_Symbol;
             m_Score = 0;
+            m_IsAIPlayer = i_isAIPlayer;
         }
         public void IncreaseScore()
         {
             m_Score += 1;
+        }
+        public Move GenerateRandomMove(Board i_GameBoard)
+        {
+            List<Move> availableMoves = i_GameBoard.GetAllAvailableMoves();
+            int randIndex = m_rand.Next(availableMoves.Count);
+
+            return availableMoves[randIndex];
         }
     }
 }

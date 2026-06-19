@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameLogic
 {
-    internal class Board
+    public class Board
     {
         private int m_BoardSize;
         private ePlayerSymbol[,] m_GameBoard;
@@ -66,17 +66,9 @@ namespace GameLogic
             return availableMoves;
         }
 
-        public bool CheckValidMove(Move i_Move)
-        {
-            return m_GameBoard[i_Move.m_Row, i_Move.m_Col] == ePlayerSymbol.Space;
-        }
-
         public void UpdateMove(Move i_Move, ePlayerSymbol i_PlayerSymbol)
         {
-            if (CheckValidMove(i_Move))
-            {
                 m_GameBoard[i_Move.m_Row, i_Move.m_Col] = i_PlayerSymbol;
-            }
         }
 
         public ePlayerSymbol? GetGameWinner()
@@ -109,7 +101,6 @@ namespace GameLogic
                     }
                 }
             }
-
             return (filledCells == m_BoardSize * m_BoardSize);
         }
 
@@ -180,7 +171,6 @@ namespace GameLogic
                     hasRightDiagonalOf = false;
                 }
             }
-
             return hasLeftDiagonalOf || hasRightDiagonalOf;
         }
     }
