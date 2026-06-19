@@ -21,11 +21,12 @@ namespace GameLogic
         private Player m_CurrentPlayer;
         private int m_BoardSize;
         private eGameType m_GameType = 0;
-        private static bool s_QuitGame = false;
+        private string m_Player1Name;
+        private string m_Player2Name;
 
         public event Action ScoreChanged;
         public event Action<CellChangedEventArgs> CellChanged;
-        public event Action<string> GameEnd;
+        public event Action<string, string> GameEnd;
 
         public Player Player1
         {
@@ -36,24 +37,14 @@ namespace GameLogic
             get { return m_Player2; }
         }
 
-        public static bool QuitGame
+        public void StartGame(int i_BoardSize, bool i_IsAIPlayer, string i_Player1Name, string i_Player2Name)
         {
-            get
-            {
-                return s_QuitGame;
-            }
-            set
-            {
-                s_QuitGame = value;
-            }
-        }
-
-        public void StartGame(int i_BoardSize, bool i_IsAIPlayer)
-        {
+            m_BoardSize = i_BoardSize;
             m_GameBoard = new Board(i_BoardSize);
             m_Player1 = new Player(ePlayerSymbol.O, false);
             m_Player2 = new Player(ePlayerSymbol.X, i_IsAIPlayer);
-
+            m_Player1Name = i_Player1Name;
+            m_Player2Name = i_Player2Name;
             m_CurrentPlayer = m_Player1;
             m_GameType = i_IsAIPlayer ? eGameType.computer : eGameType.player;
         }
@@ -90,22 +81,27 @@ namespace GameLogic
             }
             if (gameWinner != null)
             {
+                string winnerName = "";
                 if (gameWinner == ePlayerSymbol.O)
                 {
                     m_Player1.IncreaseScore();
+                    winnerName = m_Player1Name;
+
                 }
                 else if (gameWinner != null)
                 {
                     m_Player2.IncreaseScore();
+                    winnerName = m_Player2Name;
                 }
                 ScoreChanged?.Invoke();
-                GameEnd?.Invoke($"A Win!\nThe winner is {gameWinner}!");
+                GameEnd?.Invoke($"The winner is {winnerName}!", "A Win!");
             }
             else if (isBoardFull)
             {
-                GameEnd?.Invoke("A Tie!\nTie!");
+                GameEnd?.Invoke("Tie!", "A Tie!");
             }
         }
+
         public void ResetGameRound()
         {
             m_GameBoard = new Board(m_BoardSize);
